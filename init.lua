@@ -141,7 +141,7 @@ vim.o.signcolumn = "yes"
 vim.o.updatetime = 200
 
 -- Decrease mapped sequence wait time
-vim.o.timeoutlen = 500
+vim.o.timeoutlen = 400
 
 -- Configure how new splits should be opened
 --  This setting specifies that when you split a window vertically (using the
@@ -1055,6 +1055,7 @@ require("lazy").setup({
 	require("well.plugins.aerial"),
 	require("well.plugins.harpoon"),
 	require("well.plugins.dadbod"),
+	require("well.plugins.just"),
 })
 
 -- For dadbod-completion
