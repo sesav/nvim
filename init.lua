@@ -212,6 +212,20 @@ vim.keymap.set("n", "<leader>T", "<cmd>Texplore<CR>")
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
+-- Diagnostic toggle func
+local function diag_toggle_buf()
+	local bufnr = vim.api.nvim_get_current_buf()
+	if vim.b[bufnr]._diag_hidden then
+		vim.diagnostic.show(nil, bufnr)
+		vim.b[bufnr]._diag_hidden = false
+		vim.notify("Diagnostic shown (buffer)")
+	else
+		vim.diagnostic.hide(nil, bufnr)
+		vim.b[bufnr]._diag_hidden = true
+		vim.notify("Diagnostic hidden (buffer)")
+	end
+end
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -359,9 +373,8 @@ require("lazy").setup({
 			-- Space+key
 			vim.keymap.set("n", "<space>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
 			vim.keymap.set("n", "<space>sd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
-			vim.keymap.set("n", "<space>di", vim.diagnostic.disable, { desc = "[D]iagnostics d[i]sable" })
+			vim.keymap.set("n", "<space>dt", diag_toggle_buf, { desc = "[D]iagnostics [T]oggle (buffer)" })
 			vim.keymap.set("n", "<space>vd", vim.diagnostic.open_float, { desc = "[V]iew [D]iagnostic" })
-			vim.keymap.set("n", "<space>de", vim.diagnostic.enable, { desc = "[D]iagnostics [E]nable" })
 			vim.keymap.set("n", "<space>s.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
 			vim.keymap.set("n", "<space>sf", builtin.lsp_document_symbols, { noremap = true, silent = true })
 			vim.keymap.set("n", "<space>st", "<cmd>TodoTelescope<CR>", { noremap = true, silent = true })
@@ -1022,6 +1035,8 @@ require("lazy").setup({
 			ensure_installed = {
 				"bash",
 				"c",
+				"rust",
+				"go",
 				"diff",
 				"html",
 				"lua",
