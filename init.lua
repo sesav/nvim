@@ -166,7 +166,15 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.opt.listchars = { tab = "»·", space = "·", trail = "·", nbsp = "␣" }
+
+-- Basic indentation settings
+vim.opt.expandtab = true
+vim.opt.shiftwidth = 2
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.smartindent = true
+vim.opt.autoindent = true
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = "split"
@@ -960,89 +968,13 @@ require("lazy").setup({
 		end,
 	},
 
-	{ -- Collection of various small independent plugins/modules
-		"echasnovski/mini.nvim",
-		config = function()
-			-- Better Around/Inside textobjects
-			--
-			-- Examples:
-			--  - va)  - [V]isually select [A]round [)]paren
-			--  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-			--  - ci'  - [C]hange [I]nside [']quote
-			require("mini.ai").setup({ n_lines = 500 })
-
-			-- Add/delete/replace surroundings (brackets, quotes, etc.)
-			--
-			-- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-			-- - sd'   - [S]urround [D]elete [']quotes
-			-- - sr)'  - [S]urround [R]eplace [)] [']
-			require("mini.surround").setup({
-				-- Add custom surroundings to be used on top of builtin ones. For more
-				-- information with examples, see `:h MiniSurround.config`.
-				custom_surroundings = nil,
-
-				-- Duration (in ms) of highlight when calling `MiniSurround.highlight()`
-				highlight_duration = 500,
-
-				-- Module mappings. Use `''` (empty string) to disable one.
-				mappings = {
-					add = "sa", -- Add surrounding in Normal and Visual modes
-					delete = "sd", -- Delete surrounding
-					find = "sf", -- Find surrounding (to the right)
-					find_left = "sF", -- Find surrounding (to the left)
-					highlight = "sh", -- Highlight surrounding
-					replace = "sr", -- Replace surrounding
-
-					suffix_last = "l", -- Suffix to search with "prev" method
-					suffix_next = "n", -- Suffix to search with "next" method
-				},
-
-				-- Number of lines within which surrounding is searched
-				n_lines = 20,
-
-				-- Whether to respect selection type:
-				-- - Place surroundings on separate lines in linewise mode.
-				-- - Place surroundings on each line in blockwise mode.
-				respect_selection_type = false,
-
-				-- How to search for surrounding (first inside current line, then inside
-				-- neighborhood). One of 'cover', 'cover_or_next', 'cover_or_prev',
-				-- 'cover_or_nearest', 'next', 'prev', 'nearest'. For more details,
-				-- see `:h MiniSurround.config`.
-				search_method = "cover",
-
-				-- Whether to disable showing non-error feedback
-				-- This also affects (purely informational) helper messages shown after
-				-- idle time if user input is required.
-				silent = false,
-			})
-
-			-- Simple and easy statusline.
-			--  You could remove this setup call if you don't like it,
-			--  and try some other statusline plugin
-			local statusline = require("mini.statusline")
-			-- set use_icons to true if you have a Nerd Font
-			statusline.setup({ use_icons = vim.g.have_nerd_font })
-
-			-- You can configure sections in the statusline by overriding their
-			-- default behavior. For example, here we set the section for
-			-- cursor location to LINE:COLUMN
-			---@diagnostic disable-next-line: duplicate-set-field
-			statusline.section_location = function()
-				return "%2l:%-2v"
-			end
-
-			-- ... and there is more!
-			--  Check out: https://github.com/echasnovski/mini.nvim
-		end,
-	},
-
 	{ -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
 		"ellisonleao/gruvbox.nvim",
 		priority = 1000, -- Make sure to load this before all the other start plugins.
 		config = function()
 			---@diagnostic disable-next-line: missing-fields
 			require("gruvbox").setup({
+				transparent_mode = true,
 				styles = {
 					comments = { italic = false }, -- Disable italics in comments
 				},
@@ -1104,20 +1036,37 @@ require("lazy").setup({
 		--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
 		--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 	},
-	require("well.plugins.debug"),
-	require("well.plugins.autopairs"),
-	require("well.plugins.aerial"),
-	require("well.plugins.harpoon"),
-	require("well.plugins.dadbod"),
-	require("well.plugins.just"),
-})
 
--- For dadbod-completion
-local cmp = require("cmp")
-cmp.setup.filetype({ "sql" }, {
-	sources = {
-		{ name = "vim-dadbod-completion" },
-		{ name = "biffer" },
+	-- aerial
+	-- https://github.com/stevearc/aerial.nvim
+	{
+		"stevearc/aerial.nvim",
+		config = function()
+			require("aerial").setup({
+				-- optionally use on_attach to set keymaps when aerial has attached to a buffer
+				on_attach = function(bufnr)
+					-- Jump forwards/backwards with '{' and '}'
+					vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+					vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+				end,
+			})
+		end,
+
+		-- Set keymap to toggle aerial
+		vim.keymap.set("n", "<F8>", "<cmd>AerialToggle!<CR>"),
+	},
+
+	-- Harpoon
+	{
+		"ThePrimeagen/harpoon",
+		branch = "harpoon2",
+		dependencies = { "nvim-lua/plenary.nvim" },
+	},
+
+	-- Vim-just
+	{
+		"NoahTheDuke/vim-just",
+		ft = { "just" },
 	},
 })
 
