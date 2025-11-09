@@ -4,6 +4,13 @@
 vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
+-- Colorscheme
+vim.cmd.colorscheme("habamax")
+-- vim.cmd.colorscheme("apprentice")
+-- vim.cmd.colorscheme("atom")
+-- vim.cmd.colorscheme("deep-space")
+-- vim.cmd.colorscheme("termschool")
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
 
@@ -965,24 +972,6 @@ require("lazy").setup({
 					luasnip.expand_or_jump()
 				end
 			end, { desc = "Expand snippet or jump to next placeholder" })
-		end,
-	},
-
-	{ -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-		"ellisonleao/gruvbox.nvim",
-		priority = 1000, -- Make sure to load this before all the other start plugins.
-		config = function()
-			---@diagnostic disable-next-line: missing-fields
-			require("gruvbox").setup({
-				transparent_mode = true,
-				styles = {
-					comments = { italic = false }, -- Disable italics in comments
-				},
-			})
-
-			-- Color scheme
-			vim.o.background = "dark" -- or "light" for dark mode
-			vim.cmd.colorscheme("gruvbox")
 		end,
 	},
 
