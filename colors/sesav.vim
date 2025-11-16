@@ -14,7 +14,8 @@ endif
 let g:colors_name = 'sesav'
 
 " Palette
-let s:bg       = '#1c1c1c'
+"let s:bg       = '#3f374c'
+let s:bg       = '#3B383E'
 let s:bg_light = '#2a2a2a'
 let s:fg       = '#c0c0c0'
 let s:accent   = '#88b88e'

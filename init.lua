@@ -5,12 +5,9 @@ vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
 -- Colorscheme
-vim.cmd.colorscheme("sesav")
+vim.cmd.colorscheme("atom")
+-- vim.cmd.colorscheme("sesav")
 -- vim.cmd.colorscheme("habamax")
--- vim.cmd.colorscheme("apprentice")
--- vim.cmd.colorscheme("atom")
--- vim.cmd.colorscheme("deep-space")
--- vim.cmd.colorscheme("termschool")
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
@@ -25,7 +22,7 @@ vim.o.number = true
 -- Disable mouse mode, I don't use it.
 vim.o.mouse = ""
 
--- Enable cursorline and cursorcolumn
+-- Enable cursorline and cursorcolum
 vim.o.cursorline = true
 -- vim.o.cursorcolumn = true
 
