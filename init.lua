@@ -5,7 +5,8 @@ vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
 -- Colorscheme
-vim.cmd.colorscheme("habamax")
+vim.cmd.colorscheme("sesav")
+-- vim.cmd.colorscheme("habamax")
 -- vim.cmd.colorscheme("apprentice")
 -- vim.cmd.colorscheme("atom")
 -- vim.cmd.colorscheme("deep-space")
@@ -172,8 +173,8 @@ vim.o.splitbelow = true
 --  It is very similar to `vim.o` but offers an interface for conveniently interacting with tables.
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
-vim.o.list = true
-vim.opt.listchars = { tab = "»·", space = "·", trail = "·", nbsp = "␣" }
+-- vim.o.list = true
+-- vim.opt.listchars = { tab = "»·", space = "·", trail = "·", nbsp = "␣" }
 
 -- Basic indentation settings
 vim.opt.expandtab = true
