@@ -227,16 +227,8 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 
 -- Diagnostic toggle func
 local function diag_toggle_buf()
-	local bufnr = vim.api.nvim_get_current_buf()
-	if vim.b[bufnr]._diag_hidden then
-		vim.diagnostic.show(nil, bufnr)
-		vim.b[bufnr]._diag_hidden = false
-		vim.notify("Diagnostic shown (buffer)")
-	else
-		vim.diagnostic.hide(nil, bufnr)
-		vim.b[bufnr]._diag_hidden = true
-		vim.notify("Diagnostic hidden (buffer)")
-	end
+  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+	vim.notify("diagnostic.enable inversed!")
 end
 
 -- [[ Install `lazy.nvim` plugin manager ]]
