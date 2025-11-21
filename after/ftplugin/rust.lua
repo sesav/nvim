@@ -1,4 +1,4 @@
-vim.o.textwidth = 99
+vim.o.textwidth = 99 -- Set the maximum text width for wrapping
 
 -- Keybindings for Rust development
 vim.keymap.set("n", "<C-b>", "<cmd>Cargo build<CR>")

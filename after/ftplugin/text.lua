@@ -5,4 +5,4 @@ vim.o.shiftwidth = 2 -- Set shift width to 2 spaces
 
 -- Set line wrapping and text width
 vim.o.wrap = true -- Enable line wrapping
-vim.o.textwidth = 80 -- Set maximum text width for wrapping
+vim.o.textwidth = 99 -- Set maximum text width for wrapping
