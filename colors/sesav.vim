@@ -14,12 +14,15 @@ endif
 let g:colors_name = 'sesav'
 
 " Palette
-"let s:bg       = '#3f374c'
-let s:bg       = '#3B383E'
+  "let s:bg = '#322d39'
+"let s:bg       = '#1f1a23'
+let s:bg       = '#26222a'
 let s:bg_light = '#2a2a2a'
-let s:fg       = '#c0c0c0'
+let s:bg_popup = '#1f1c23'
+let s:fg       = '#c7c7c7'
+let s:fg_white = '#ffffff' 
 let s:accent   = '#88b88e'
-let s:purple   = '#8f72bf'
+let s:purple   = '#ab83ba'
 let s:yellow   = '#d9c362'
 let s:subtle   = '#4a4a4a'
 
@@ -36,12 +39,12 @@ exe 'hi SignColumn guibg=' . s:bg
 " UI
 exe 'hi StatusLine guifg=' . s:fg . ' guibg=' . s:bg_light
 exe 'hi StatusLineNC guifg=' . s:purple . ' guibg=' . s:bg_light
-exe 'hi Pmenu guifg=' . s:fg . ' guibg=' . s:bg_light
-exe 'hi PmenuSel guifg=' . s:fg . ' guibg=' . s:purple . ' gui=bold'
-exe 'hi PmenuSbar guibg=' . s:bg_light
+exe 'hi Pmenu guifg=' . s:fg . ' guibg=' . s:bg_popup
+exe 'hi PmenuSel guifg=' . s:fg_white . ' guibg=' . s:purple . ' gui=bold'
+exe 'hi PmenuSbar guibg=' . s:bg_popup
 exe 'hi PmenuThumb guibg=' . s:subtle
-exe 'hi FloatBorder guifg=' . s:accent . ' guibg=' . s:bg_light
-exe 'hi NormalFloat guifg=' . s:fg . ' guibg=' . s:bg_light
+exe 'hi FloatBorder guifg=' . s:accent . ' guibg=' . s:bg_popup
+exe 'hi NormalFloat guifg=' . s:fg . ' guibg=' . s:bg_popup
 exe 'hi TabLine guifg=' . s:purple . ' guibg=' . s:bg_light
 exe 'hi TabLineSel guifg=' . s:fg . ' guibg=' . s:bg
 exe 'hi TabLineFill guibg=' . s:bg_light
@@ -81,9 +84,9 @@ exe 'hi String guifg=' . s:purple
 exe 'hi Function guifg=' . s:accent
 exe 'hi Type guifg=' . s:accent
 exe 'hi Delimiter guifg=' . s:purple
-exe 'hi Statement guifg=' . s:fg . ' gui=NONE'
-exe 'hi Keyword guifg=' . s:fg . ' gui=NONE'
-exe 'hi Constant guifg=' . s:fg . ' gui=NONE'
-exe 'hi Identifier guifg=' . s:fg . ' gui=NONE'
+exe 'hi Statement guifg=' . s:purple . ' gui=NONE'
+exe 'hi Keyword guifg=' . s:yellow . ' gui=NONE'
+exe 'hi Constant guifg=' . s:purple . ' gui=NONE'
+exe 'hi Identifier guifg=' . s:accent . ' gui=NONE'
 exe 'hi PreProc guifg=' . s:accent . ' gui=NONE'
-exe 'hi Special guifg=' . s:fg . ' gui=NONE'
+exe 'hi Special guifg=' . s:yellow . ' gui=NONE'

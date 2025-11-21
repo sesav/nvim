@@ -5,8 +5,8 @@ vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
 -- Colorscheme
-vim.cmd.colorscheme("atom")
--- vim.cmd.colorscheme("sesav")
+-- vim.cmd.colorscheme("atom")
+vim.cmd.colorscheme("sesav")
 -- vim.cmd.colorscheme("habamax")
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
@@ -218,7 +218,7 @@ vim.keymap.set("n", "<Space>", "<cmd>nohlsearch<CR>")
 
 -- Explore
 vim.keymap.set("n", "<leader>e", "<cmd>Ex<CR>")
-vim.keymap.set("n", "<leader>s", "<cmd>Vexplore<CR>")
+vim.keymap.set("n", "<leader>s", "<cmd>Vexplore!<CR>")
 vim.keymap.set("n", "<leader>S", "<cmd>Hexplore<CR>")
 vim.keymap.set("n", "<leader>T", "<cmd>Texplore<CR>")
 
@@ -1047,6 +1047,11 @@ require("lazy").setup({
 		"NoahTheDuke/vim-just",
 		ft = { "just" },
 	},
+  {
+      "catgoose/nvim-colorizer.lua",
+      event = "BufReadPre",
+      opts = {},
+  },
 })
 
 -- Harpoon
