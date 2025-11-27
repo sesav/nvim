@@ -5,9 +5,7 @@ vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
 -- Colorscheme
--- vim.cmd.colorscheme("atom")
-vim.cmd.colorscheme("sesav")
--- vim.cmd.colorscheme("habamax")
+vim.cmd.colorscheme("synthe")
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
