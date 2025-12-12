@@ -833,13 +833,6 @@ require("lazy").setup({
 						print("  ✗ " .. loader_name)
 					end
 				end
-
-				print("\nКак использовать снипеты:")
-				print("1. Напечатайте триггер снипета (например, 'main' в Python)")
-				print("2. Нажмите Tab для выбора снипета из автодополнения")
-				print("3. Или нажмите Leader + t для прямого расширения снипета")
-				print("4. Используйте Ctrl+L для перехода к следующему placeholder")
-				print("5. Используйте Ctrl+H для перехода к предыдущему placeholder")
 			end, {})
 
 			cmp.setup({
