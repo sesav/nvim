@@ -5,7 +5,7 @@ vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
 -- Colorscheme
-vim.cmd.colorscheme("synthe")
+-- vim.cmd.colorscheme("synthe")
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
@@ -26,6 +26,9 @@ vim.o.cursorline = true
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
+
+-- Laststatus
+vim.opt.laststatus = 3
 
 -- Copy/Paste to the system clipboard
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -299,43 +302,6 @@ require("lazy").setup({
 			-- Useful for getting pretty icons, but requires a Nerd Font.
 			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 		},
-		defaults = {
-			file_ignore_patterns = {
-				"venv/.*",
-				".vnev/.*",
-				"yarn%.lock",
-				"package%-lock%.json",
-				"pnpm%-lock%.yaml",
-				"node_modules/.*",
-				"%.git/.*",
-				"%.webp",
-				"%.avif",
-				"%.heic",
-				"%.mp3",
-				"%.mp4",
-				"%.mkv",
-				"%.mov",
-				"%.wav",
-				"%.avi",
-				"%.webm",
-				"%.ttf",
-				"%.otf",
-				"%.woff",
-				"%.woff2",
-				"%.svg",
-				"%.png",
-				"%.jpeg",
-				"%.jpg",
-				"%.ico",
-				".env.*",
-				"%.db",
-				".env.*",
-				".yarn/.*",
-				"go%.sum",
-			},
-			scroll_strategy = "cycle",
-			sorting_strategy = "ascending",
-		},
 		config = function()
 			-- Telescope is a fuzzy finder that comes with a lot of different things that
 			-- it can fuzzy find! It's more than just a "file finder", it can search
@@ -347,15 +313,42 @@ require("lazy").setup({
 			-- [[ Configure Telescope ]]
 			-- See `:help telescope` and `:help telescope.setup()`
 			require("telescope").setup({
-				-- You can put your default mappings / updates / etc. in here
-				--  All the info you're looking for is in `:help telescope.setup()`
-				--
-				-- defaults = {
-				--   mappings = {
-				--     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-				--   },
-				-- },
-				-- pickers = {}
+				defaults = {
+					file_ignore_patterns = {
+						"venv/.*",
+						".venv/.*",
+						"yarn%.lock",
+						"package%-lock%.json",
+						"pnpm%-lock%.yaml",
+						"node_modules/.*",
+						"%.git/.*",
+						"%.webp",
+						"%.avif",
+						"%.heic",
+						"%.mp3",
+						"%.mp4",
+						"%.mkv",
+						"%.mov",
+						"%.wav",
+						"%.avi",
+						"%.webm",
+						"%.ttf",
+						"%.otf",
+						"%.woff",
+						"%.woff2",
+						"%.svg",
+						"%.png",
+						"%.jpeg",
+						"%.jpg",
+						"%.ico",
+						".env.*",
+						"%.db",
+						".yarn/.*",
+						"go%.sum",
+					},
+					scroll_strategy = "cycle",
+					sorting_strategy = "ascending",
+				},
 				extensions = {
 					["ui-select"] = {
 						require("telescope.themes").get_dropdown(),
@@ -1039,10 +1032,92 @@ require("lazy").setup({
 		ft = { "just" },
 	},
   {
-      "catgoose/nvim-colorizer.lua",
-      event = "BufReadPre",
-      opts = {},
+    "catgoose/nvim-colorizer.lua",
+    event = "BufReadPre",
+    opts = {},
   },
+
+	-- Solarized
+	{
+		"maxmx03/solarized.nvim",
+		lazy = false,
+		priority = 1000,
+		opts = {},
+		config = function(_, opts)
+			require("solarized").setup(opts)
+			vim.o.background = "light"
+			vim.cmd.colorscheme("solarized")
+		end,
+	},
+
+	-- Lualine
+	{
+		"nvim-lualine/lualine.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		opts = {
+			options = {
+				theme = "solarized",
+				section_separators = "",
+				component_separators = "|",
+			},
+			sections = {
+				lualine_a = { "mode" },
+				lualine_b = { "branch", "diff", "diagnostics" },
+				lualine_c = { { "filename", path = 1 } },
+				lualine_x = { "encoding", "fileformat", "filetype" },
+				lualine_y = { "progress" },
+				lualine_z = { "location" },
+			},
+		},
+	},
+
+	-- Which-key: shows available keybindings in popup
+	{
+		"folke/which-key.nvim",
+		event = "VeryLazy",
+		opts = {
+			delay = 300,
+		},
+		keys = {
+			{
+				"<leader>?",
+				function()
+					require("which-key").show({ global = false })
+				end,
+				desc = "Buffer Local Keymaps (which-key)",
+			},
+		},
+	},
+
+	-- Indent-blankline: visual indentation guides
+	{
+		"lukas-reineke/indent-blankline.nvim",
+		main = "ibl",
+		event = { "BufReadPost", "BufNewFile" },
+		opts = {
+			indent = {
+				char = "│",
+			},
+			scope = {
+				enabled = true,
+				show_start = false,
+				show_end = false,
+			},
+		},
+	},
+
+	-- Trouble: better diagnostics list
+	{
+		"folke/trouble.nvim",
+		cmd = "Trouble",
+		keys = {
+			{ "<leader>xx", "<cmd>Trouble diagnostics toggle<CR>", desc = "Diagnostics (Trouble)" },
+			{ "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<CR>", desc = "Buffer Diagnostics (Trouble)" },
+			{ "<leader>xl", "<cmd>Trouble loclist toggle<CR>", desc = "Location List (Trouble)" },
+			{ "<leader>xq", "<cmd>Trouble qflist toggle<CR>", desc = "Quickfix List (Trouble)" },
+		},
+		opts = {},
+	},
 })
 
 -- Harpoon
