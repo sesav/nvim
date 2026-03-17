@@ -10,7 +10,11 @@ The Vim theme [synthe](https://github.com/sesav/synthe-theme).
 
 This repository is updated from time to time..
 
-## How to install
+## Installation
+I'm currently running this setup, with Nix handling the installation. So I'm not installing
+requirements or setting up `$PYTHON_NVIM_VENV`, I'm just using Nix flake and it's super handy.
+
+## Standalone installation
 * `git clone https://github.com/sesav/nvim.git ~/.config/nvim`
 * To keep the libraries wheel, setuptools, pip, and neovim up to date, I use
 [uv](https://github.com/astral-sh/uv) and a separate environment.

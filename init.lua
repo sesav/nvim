@@ -3,6 +3,7 @@
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
+vim.opt.termguicolors = true
 
 -- Colorscheme
 -- vim.cmd.colorscheme("synthe")
@@ -202,7 +203,9 @@ vim.keymap.set("n", "S", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
 
 -- Python
 local python_venv_path = os.getenv("PYTHON_NVIM_VENV")
-vim.g.python3_host_prog = python_venv_path
+if python_venv_path and vim.fn.executable(python_venv_path) == 1 then
+	vim.g.python3_host_prog = python_venv_path
+end
 vim.g.black_linelength = 120
 
 -- Better Netrw configuration
@@ -228,8 +231,14 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 
 -- Diagnostic toggle func
 local function diag_toggle_buf()
-  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
-	vim.notify("diagnostic.enable inversed!")
+	local bufnr = vim.api.nvim_get_current_buf()
+	if vim.diagnostic.is_enabled({ bufnr = bufnr }) then
+		vim.diagnostic.disable(bufnr)
+		vim.notify("Buffer diagnostics disabled")
+	else
+		vim.diagnostic.enable(bufnr)
+		vim.notify("Buffer diagnostics enabled")
+	end
 end
 
 -- [[ Install `lazy.nvim` plugin manager ]]
@@ -243,6 +252,17 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	end
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
+
+-- Fix nvim-treesitter healthcheck by ensuring install dir is in runtimepath
+local function add_to_rtp(path)
+	local paths = vim.api.nvim_list_runtime_paths()
+	if vim.list_contains(paths, path) then
+		return
+	end
+	vim.o.runtimepath = vim.o.runtimepath .. "," .. path
+end
+local treesitter_install_dir = vim.fn.stdpath("data") .. "/ts-parsers/"
+add_to_rtp(treesitter_install_dir)
 
 -- [[ Configure and install plugins ]]
 --
@@ -274,10 +294,12 @@ require("lazy").setup({
 				delay = 200,
 			},
 		},
-		vim.keymap.set("n", "gb", "<cmd>Gitsigns blame<CR>"),
-		vim.keymap.set("n", "gc", "<cmd>Gitsigns toggle_current_line_blame<CR>"),
-		vim.keymap.set("n", "]c", "<cmd>Gitsigns next_hunk<CR>"),
-		vim.keymap.set("n", "[c", "<cmd>Gitsigns prev_hunk<CR>"),
+		keys = {
+			{ "gb", "<cmd>Gitsigns blame<CR>", desc = "Gitsigns blame" },
+			{ "gc", "<cmd>Gitsigns toggle_current_line_blame<CR>", desc = "Gitsigns toggle blame" },
+			{ "]c", "<cmd>Gitsigns next_hunk<CR>", desc = "Gitsigns next hunk" },
+			{ "[c", "<cmd>Gitsigns prev_hunk<CR>", desc = "Gitsigns prev hunk" },
+		},
 	},
 
 	{ -- Fuzzy Finder (files, lsp, etc)
@@ -667,49 +689,6 @@ require("lazy").setup({
 		end,
 	},
 
-	-- { -- Autoformat
-	-- 	"stevearc/conform.nvim",
-	-- 	event = { "BufWritePre" },
-	-- 	cmd = { "ConformInfo" },
-	-- 	keys = {
-	-- 		{
-	-- 			"<leader>f",
-	-- 			function()
-	-- 				require("conform").format({ async = true, lsp_format = "fallback" })
-	-- 			end,
-	-- 			mode = "",
-	-- 			desc = "[F]ormat buffer",
-	-- 		},
-	-- 	},
-	-- 	opts = {
-	-- 		notify_on_error = false,
-	-- 		format_on_save = function(bufnr)
-	-- 			-- Disable "format_on_save lsp_fallback" for languages that don't
-	-- 			-- have a well standardized coding style. You can add additional
-	-- 			-- languages here or re-enable it for the disabled ones.
-	-- 			local disable_filetypes = { c = true, cpp = true }
-	-- 			local lsp_format_opt
-	-- 			if disable_filetypes[vim.bo[bufnr].filetype] then
-	-- 				lsp_format_opt = "never"
-	-- 			else
-	-- 				lsp_format_opt = "fallback"
-	-- 			end
-	-- 			return {
-	-- 				timeout_ms = 500,
-	-- 				lsp_format = lsp_format_opt,
-	-- 			}
-	-- 		end,
-	-- 		formatters_by_ft = {
-	-- 			lua = { "stylua" },
-	-- 			-- Conform can also run multiple formatters sequentially
-	-- 			python = {
-	-- 				"ruff_fix", -- To fix lint errors.
-	-- 				"ruff_format", -- To run the formatter.
-	-- 			},
-	-- 		},
-	-- 	},
-	-- },
-
 	{ -- Autocompletion
 		"hrsh7th/nvim-cmp",
 		event = "InsertEnter",
@@ -955,17 +934,17 @@ require("lazy").setup({
 		event = "VimEnter",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = { signs = false },
-
-		-- Set keymap for quick asscess
-		vim.keymap.set("n", "<F10>", "<cmd>TodoTelescope<CR>"),
+		keys = {
+			{ "<F10>", "<cmd>TodoTelescope<CR>", desc = "Todo Telescope" },
+		},
 	},
 
 	{ -- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
-    main = "nvim-treesitter", -- Sets main module to use for opts
 		-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
 		opts = {
+			install_dir = treesitter_install_dir,
 			ensure_installed = {
 				"bash",
 				"c",
@@ -1014,9 +993,9 @@ require("lazy").setup({
 				end,
 			})
 		end,
-
-		-- Set keymap to toggle aerial
-		vim.keymap.set("n", "<F8>", "<cmd>AerialToggle!<CR>"),
+		keys = {
+			{ "<F8>", "<cmd>AerialToggle!<CR>", desc = "Toggle Aerial" },
+		},
 	},
 
 	-- Harpoon
@@ -1120,6 +1099,8 @@ require("lazy").setup({
 	},
 })
 
+add_to_rtp(treesitter_install_dir)
+
 -- Harpoon
 local harpoon = require("harpoon")
 harpoon:setup({})
@@ -1131,14 +1112,20 @@ vim.keymap.set("n", "<C-e>", function()
 	harpoon.ui:toggle_quick_menu(harpoon:list())
 end)
 
-vim.keymap.set("n", "<C-t>", function()
+vim.keymap.set("n", "<leader>1", function()
 	harpoon:list():select(1)
 end)
-vim.keymap.set("n", "<C-h>", function()
+vim.keymap.set("n", "<leader>2", function()
 	harpoon:list():select(2)
 end)
-vim.keymap.set("n", "<C-n>", function()
+vim.keymap.set("n", "<leader>3", function()
 	harpoon:list():select(3)
+end)
+vim.keymap.set("n", "<leader>4", function()
+	harpoon:list():select(4)
+end)
+vim.keymap.set("n", "<leader>5", function()
+	harpoon:list():select(5)
 end)
 
 -- The line beneath this is called `modeline`. See `:help modeline`
