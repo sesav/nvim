@@ -6,8 +6,6 @@
 
 This config inspired by and partially based on [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim).
 
-The Vim theme [synthe](https://github.com/sesav/synthe-theme).
-
 This repository is updated from time to time..
 
 ## Installation
