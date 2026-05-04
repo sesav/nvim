@@ -1077,23 +1077,6 @@ require("lazy").setup({
     },
   },
 
-  -- Indent-blankline: visual indentation guides
-  -- {
-  --   "lukas-reineke/indent-blankline.nvim",
-  --   main = "ibl",
-  --   event = { "BufReadPost", "BufNewFile" },
-  --   opts = {
-  --     indent = {
-  --       char = "│",
-  --     },
-  --     scope = {
-  --       enabled = true,
-  --       show_start = false,
-  --       show_end = false,
-  --     },
-  --   },
-  -- },
-
   -- Trouble: better diagnostics list
   {
     "folke/trouble.nvim",
