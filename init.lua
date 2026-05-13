@@ -258,26 +258,28 @@ require("lazy").setup({
   -- Then, because we use the `opts` key (recommended), the configuration runs
   -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
 
-  { -- Useful plugin to show you pending keybinds.
-    "folke/which-key.nvim",
-    event = "VimEnter",
-    ---@module 'which-key'
-    ---@type wk.Opts
-    ---@diagnostic disable-next-line: missing-fields
-    opts = {
-      -- delay between pressing a key and opening which-key (milliseconds)
-      delay = 0,
-      icons = { mappings = vim.g.have_nerd_font },
-
-      -- Document existing key chains
-      spec = {
-        { "<leader>s", group = "[S]earch", mode = { "n", "v" } },
-        { "<leader>t", group = "[T]oggle" },
-        { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } }, -- Enable gitsigns recommended keymaps first
-        { "gr", group = "LSP Actions", mode = { "n" } },
-      },
-    },
-  },
+  -- This is helpful when I add something new and need to see binds.
+  -- I comment this block when folke/which-key.nvim is not necessary.
+  -- { -- Useful plugin to show you pending keybinds.
+  --   "folke/which-key.nvim",
+  --   event = "VimEnter",
+  --   ---@module 'which-key'
+  --   ---@type wk.Opts
+  --   ---@diagnostic disable-next-line: missing-fields
+  --   opts = {
+  --     -- delay between pressing a key and opening which-key (milliseconds)
+  --     delay = 0,
+  --     icons = { mappings = vim.g.have_nerd_font },
+  --
+  --     -- Document existing key chains
+  --     spec = {
+  --       { "<leader>s", group = "[S]earch", mode = { "n", "v" } },
+  --       { "<leader>t", group = "[T]oggle" },
+  --       { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } }, -- Enable gitsigns recommended keymaps first
+  --       { "gr", group = "LSP Actions", mode = { "n" } },
+  --     },
+  --   },
+  -- },
 
   { -- Fuzzy Finder (files, lsp, etc)
     "nvim-telescope/telescope.nvim",
