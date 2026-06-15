@@ -1,8 +1,4 @@
 # My neovim config
-![](https://img.shields.io/github/repo-size/sesav/nvim)
-![](https://img.shields.io/github/last-commit/sesav/nvim)
-![](https://img.shields.io/github/languages/top/sesav/nvim)
-
 
 This config inspired by and partially based on [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim).
 
