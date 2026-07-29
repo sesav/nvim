@@ -18,9 +18,6 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 
 -- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
 vim.schedule(function()
   vim.o.clipboard = "unnamedplus"
 end)
@@ -43,10 +40,6 @@ vim.o.updatetime = 250
 
 -- Decrease mapped sequence wait time
 vim.o.timeoutlen = 300
-
--- Configure how new splits should be opened
-vim.o.splitright = true
-vim.o.splitbelow = true
 
 -- Resize windows with Alt + Arrow keys
 vim.keymap.set("n", "<M-Left>", "<cmd>vertical resize -4<CR>", { noremap = true, silent = true })
@@ -75,12 +68,6 @@ vim.keymap.set("x", "<C-Left>", "b", { noremap = true, silent = true })
 vim.keymap.set("x", "<C-Right>", "e", { noremap = true, silent = true })
 
 vim.keymap.set("n", "<leader><F1>", "<cmd>set nu!<CR>", { noremap = true, silent = true })
-
--- Enable break indent
-vim.o.breakindent = true
-
--- Save undo history
-vim.o.undofile = true
 
 -- Basic indentation settings
 vim.opt.expandtab = true
@@ -116,9 +103,6 @@ vim.keymap.set("n", "<leader>s", "<cmd>Vexplore!<CR>")
 vim.keymap.set("n", "<leader>S", "<cmd>Hexplore<CR>")
 vim.keymap.set("n", "<leader>T", "<cmd>Texplore<CR>")
 
--- Diagnostic keymaps
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
-
 -- Diagnostic toggle func
 local function diag_toggle_buf()
   local bufnr = vim.api.nvim_get_current_buf()
@@ -143,9 +127,6 @@ vim.o.inccommand = "split"
 
 -- Show which line your cursor is on
 vim.o.cursorline = true
-
--- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -610,7 +591,10 @@ require("lazy").setup({
             end
 
             -- Fallback: just use whatever `python3` resolves to
-            local python = vim.fn.exepath("python3") or vim.fn.exepath("python")
+            local python = vim.fn.exepath("python3")
+            if python == "" then
+              python = vim.fn.exepath("python")
+            end
             if python and python ~= "" then
               config.settings.python.pythonPath = python
             end
@@ -626,23 +610,20 @@ require("lazy").setup({
           },
         },
 
-        stylua = {}, -- Used to format Lua code
-
         rust_analyzer = {
           settings = {
             ["rust-analyzer"] = {
-              checkOnSave = true,
               check = {
                 command = "clippy",
-                inlayHints = {
-                  bindingModeHints = { enable = false },
-                  chainingHints = { enable = true },
-                  closingBraceHints = { enable = true, minLines = 25 },
-                  closureReturnTypeHints = { enable = "never" },
-                  lifetimeElisionHints = { enable = "never" },
-                  parameterHints = { enable = true },
-                  typeHints = { enable = true },
-                },
+              },
+              inlayHints = {
+                bindingModeHints = { enable = false },
+                chainingHints = { enable = true },
+                closingBraceHints = { enable = true, minLines = 25 },
+                closureReturnTypeHints = { enable = "never" },
+                lifetimeElisionHints = { enable = "never" },
+                parameterHints = { enable = true },
+                typeHints = { enable = true },
               },
             },
           },
@@ -721,11 +702,8 @@ require("lazy").setup({
       -- You can press `g?` for help in this menu.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        "rust_analyzer",
-        "gopls",
         "goimports",
         "clangd",
-        "pyright",
         "marksman",
         "ruff",
       })
@@ -929,7 +907,37 @@ require("lazy").setup({
   --   end,
   -- },
 
-  { "ellisonleao/gruvbox.nvim", priority = 1000, config = true },
+  {
+    "ellisonleao/gruvbox.nvim",
+    priority = 1000,
+    opts = {
+      terminal_colors = true,
+      undercurl = true,
+      underline = true,
+      bold = true,
+      italic = {
+        strings = true,
+        emphasis = true,
+        comments = true,
+        operators = false,
+        folds = true,
+      },
+      strikethrough = true,
+      invert_selection = false,
+      invert_signs = false,
+      invert_tabline = false,
+      inverse = true,
+      contrast = "",
+      palette_overrides = {},
+      overrides = {},
+      dim_inactive = false,
+      transparent_mode = true,
+    },
+    config = function(_, opts)
+      require("gruvbox").setup(opts)
+      vim.cmd.colorscheme("gruvbox")
+    end,
+  },
 
   -- Highlight todo, notes, etc in comments
   {
@@ -1030,9 +1038,8 @@ require("lazy").setup({
       require("aerial").setup({
         -- optionally use on_attach to set keymaps when aerial has attached to a buffer
         on_attach = function(bufnr)
-          -- Jump forwards/backwards with '{' and '}'
-          vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
-          vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+          vim.keymap.set("n", "[a", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+          vim.keymap.set("n", "]a", "<cmd>AerialNext<CR>", { buffer = bufnr })
         end,
       })
     end,
@@ -1140,32 +1147,6 @@ require("lazy").setup({
     },
   },
 })
-
--- Colorscheme
-require("gruvbox").setup({
-  terminal_colors = true, -- add neovim terminal colors
-  undercurl = true,
-  underline = true,
-  bold = true,
-  italic = {
-    strings = true,
-    emphasis = true,
-    comments = true,
-    operators = false,
-    folds = true,
-  },
-  strikethrough = true,
-  invert_selection = false,
-  invert_signs = false,
-  invert_tabline = false,
-  inverse = true, -- invert background for search, diffs, statuslines and errors
-  contrast = "", -- can be "hard", "soft" or empty string
-  palette_overrides = {},
-  overrides = {},
-  dim_inactive = false,
-  transparent_mode = true,
-})
-vim.cmd.colorscheme("gruvbox")
 
 -- Harpoon
 local harpoon = require("harpoon")

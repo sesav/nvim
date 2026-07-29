@@ -1,3 +1,3 @@
-vim.o.textwidth = 99 -- Set the maximum text width for wrapping
+vim.bo.textwidth = 99
 
 vim.cmd("set makeprg=g++\\ %")
