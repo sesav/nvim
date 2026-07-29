@@ -631,17 +631,18 @@ require("lazy").setup({
         rust_analyzer = {
           settings = {
             ["rust-analyzer"] = {
-              checkOnSave = {
+              checkOnSave = true,
+              check = {
                 command = "clippy",
-              },
-              inlayHints = {
-                bindingModeHints = { enable = false },
-                chainingHints = { enable = true },
-                closingBraceHints = { enable = true, minLines = 25 },
-                closureReturnTypeHints = { enable = "never" },
-                lifetimeElisionHints = { enable = "never" },
-                parameterHints = { enable = true },
-                typeHints = { enable = true },
+                inlayHints = {
+                  bindingModeHints = { enable = false },
+                  chainingHints = { enable = true },
+                  closingBraceHints = { enable = true, minLines = 25 },
+                  closureReturnTypeHints = { enable = "never" },
+                  lifetimeElisionHints = { enable = "never" },
+                  parameterHints = { enable = true },
+                  typeHints = { enable = true },
+                },
               },
             },
           },
