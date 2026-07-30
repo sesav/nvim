@@ -1,3 +1,7 @@
+-- Leader keys
+vim.g.mapleader = "\\"
+vim.g.maplocalleader = "\\"
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -86,6 +90,13 @@ vim.keymap.set("n", "N", "Nzzzv", { noremap = true, silent = true })
 
 -- Find and replace with the word under the cursor
 vim.keymap.set("n", "S", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { noremap = true, silent = false })
+
+-- Tell Neovim to recognize DockerfileCI as dockerfile filetype
+vim.filetype.add({
+  filename = {
+    ["DockerfileCI"] = "dockerfile",
+  },
+})
 
 -- Better Netrw configuration
 vim.g.netrw_liststyle = 3
@@ -376,6 +387,8 @@ require("lazy").setup({
 
       -- Space+key
       vim.keymap.set("n", "<space>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
+      vim.keymap.set("n", "<space>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
+      vim.keymap.set("n", "<space>sr", builtin.resume, { desc = "[S]earch [R]esume" })
       vim.keymap.set("n", "<space>sd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
       vim.keymap.set("n", "<space>dt", diag_toggle_buf, { desc = "[D]iagnostics [T]oggle (buffer)" })
       vim.keymap.set("n", "<space>vd", vim.diagnostic.open_float, { desc = "[V]iew [D]iagnostic" })
@@ -478,6 +491,9 @@ require("lazy").setup({
         opts = {},
       },
       -- Maps LSP server names between nvim-lspconfig and Mason package names.
+      -- Intentionally not `setup()`-ed: servers are enabled below with
+      -- `vim.lsp.enable`. It is only here so mason-tool-installer can translate
+      -- names like `rust_analyzer` into the `rust-analyzer` Mason package.
       "mason-org/mason-lspconfig.nvim",
       "WhoIsSethDaniel/mason-tool-installer.nvim",
 
@@ -572,30 +588,41 @@ require("lazy").setup({
 
         pyright = {
           before_init = function(_, config)
-            -- Try to find the python interpreter in order:
+            -- Find the interpreter pyright should use, cheapest first:
             -- 1. Active venv (uv, virtualenv, etc.)
-            -- 2. `uv run python` in current project
-            -- 3. Fallback to system python
-            local venv = os.getenv("VIRTUAL_ENV")
-            if venv then
-              config.settings.python.pythonPath = venv .. "/bin/python"
-              return
+            -- 2. `.venv` in the project root
+            -- 3. `uv python find` (only reports a path, never creates or syncs a venv)
+            -- 4. Fallback to system python
+            local root = config.root_dir or vim.fn.getcwd()
+
+            local function resolve_python()
+              local venv = vim.env.VIRTUAL_ENV
+              if venv and vim.fn.executable(venv .. "/bin/python") == 1 then
+                return venv .. "/bin/python"
+              end
+
+              local local_venv = root .. "/.venv/bin/python"
+              if vim.fn.executable(local_venv) == 1 then
+                return local_venv
+              end
+
+              if vim.fn.executable("uv") == 1 then
+                local out = vim.system({ "uv", "python", "find" }, { cwd = root, text = true }):wait()
+                local uv_python = vim.trim(out.stdout or "")
+                if out.code == 0 and uv_python ~= "" and vim.fn.executable(uv_python) == 1 then
+                  return uv_python
+                end
+              end
+
+              local python = vim.fn.exepath("python3")
+              if python == "" then
+                python = vim.fn.exepath("python")
+              end
+              return python ~= "" and python or nil
             end
 
-            -- Try uv: get the python path from the current project
-            local uv_python = vim.fn.system("uv run python -c 'import sys; print(sys.executable)' 2>/dev/null")
-            uv_python = vim.trim(uv_python)
-            if uv_python ~= "" and vim.fn.executable(uv_python) == 1 then
-              config.settings.python.pythonPath = uv_python
-              return
-            end
-
-            -- Fallback: just use whatever `python3` resolves to
-            local python = vim.fn.exepath("python3")
-            if python == "" then
-              python = vim.fn.exepath("python")
-            end
-            if python and python ~= "" then
+            local python = resolve_python()
+            if python then
               config.settings.python.pythonPath = python
             end
           end,
@@ -686,13 +713,6 @@ require("lazy").setup({
         },
       }
 
-      -- Tell Neovim to recognize DockerfileCI as dockerfile filetype
-      vim.filetype.add({
-        filename = {
-          ["DockerfileCI"] = "dockerfile",
-        },
-      })
-
       -- Ensure the servers and tools above are installed
       --
       -- To check the current status of installed tools and/or manually install
@@ -706,6 +726,7 @@ require("lazy").setup({
         "clangd",
         "marksman",
         "ruff",
+        "stylua", -- Used by conform.nvim to format Lua
       })
 
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
