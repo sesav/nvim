@@ -7,4 +7,4 @@ vim.bo.softtabstop = 2
 vim.bo.shiftwidth = 2
 vim.bo.expandtab = true
 
-vim.keymap.set("n", "<Leader>x", "<cmd>!clear;lua %:p<CR>")
+vim.keymap.set("n", "<Leader>x", "<cmd>!clear;lua %:p<CR>", { buffer = true })

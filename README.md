@@ -10,21 +10,10 @@ requirements or setting up `$PYTHON_NVIM_VENV`, I'm just using Nix flake and it'
 
 ## Standalone installation
 * `git clone https://github.com/sesav/nvim.git ~/.config/nvim`
-* To keep the libraries wheel, setuptools, pip, and neovim up to date, I use
-[uv](https://github.com/astral-sh/uv) and a separate environment.
-
-  You need to set the full path in the `$PYTHON_NVIM_VENV` variable to your
-  interpreter that will be used by neovim.
-
-  For example, I use my `~/.zshrc` and put the variable there:
-
-  ```shell
-  export PYTHON_NVIM_VENV="/home/user/.local/share/nvim/py-plugs/.venv/bin/python"
-  ```
-
-* That's it, now just run `nvim` and wait a bit.
-
-[Lazy.nvim](https://github.com/folke/lazy.nvim) is used as a dependency manager.
+* That's it, now just run `nvim` and wait a bit. Plugins and tools are installed automatically:
+plugins by [Lazy.nvim](https://github.com/folke/lazy.nvim), LSP servers and tools (`stylua`,
+`ruff`, `goimports`, `marksman`, ...) by Mason.
+* Pyright picks the Python per project automatically: active venv (`$VIRTUAL_ENV`) -> `./.venv` -> `uv python find` -> system Python.
 
 ## Requirements
 * `git`
@@ -38,7 +27,7 @@ requirements or setting up `$PYTHON_NVIM_VENV`, I'm just using Nix flake and it'
 (`vim.g.have_nerd_font` in `init.lua`).
 * `python`
 * `go`
-* `ruff` linter and code formatter for python ([installation](https://github.com/astral-sh/ruff?tab=readme-ov-file#installation)) 
+* `ruff` linter and code formatter for python: installed automatically via Mason
 * and any language you need.
 
 I believe that is all.

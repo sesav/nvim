@@ -157,7 +157,14 @@ vim.diagnostic.config({
   virtual_lines = false, -- Text shows up underneath the line, with virtual lines
 
   -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
-  jump = { float = true },
+  jump = {
+    on_jump = function(diagnostic, bufnr)
+      if not diagnostic then
+        return
+      end
+      vim.diagnostic.open_float({ bufnr = bufnr, scope = "cursor", focus = false })
+    end,
+  },
 })
 
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
@@ -213,6 +220,7 @@ require("lazy").setup({
 
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     "lewis6991/gitsigns.nvim",
+    event = "BufReadPost",
     ---@module 'gitsigns'
     ---@type Gitsigns.Config
     ---@diagnostic disable-next-line: missing-fields
@@ -230,7 +238,7 @@ require("lazy").setup({
     },
     keys = {
       { "gb", "<cmd>Gitsigns blame<CR>", desc = "Gitsigns blame" },
-      { "gc", "<cmd>Gitsigns toggle_current_line_blame<CR>", desc = "Gitsigns toggle blame" },
+      { "gB", "<cmd>Gitsigns toggle_current_line_blame<CR>", desc = "Gitsigns toggle blame" },
       { "]c", "<cmd>Gitsigns next_hunk<CR>", desc = "Gitsigns next hunk" },
       { "[c", "<cmd>Gitsigns prev_hunk<CR>", desc = "Gitsigns prev hunk" },
     },
@@ -748,7 +756,7 @@ require("lazy").setup({
         function()
           require("conform").format({ async = true, lsp_format = "fallback" })
         end,
-        mode = "",
+        mode = { "n", "x" },
         desc = "[F]ormat buffer",
       },
     },
@@ -818,17 +826,9 @@ require("lazy").setup({
             paths = { vim.fn.stdpath("config") .. "/snippets" },
           })
 
-          -- Add Leader + t mapping for snippet expansion
-          vim.keymap.set("i", "<leader>t", function()
-            if luasnip.expandable() then
-              luasnip.expand()
-            elseif luasnip.expand_or_locally_jumpable() then
-              luasnip.expand_or_jump()
-            end
-          end, { desc = "Expand snippet or jump to next placeholder" })
-
-          -- Also add it for normal mode to trigger snippet expansion
-          vim.keymap.set("n", "<leader>t", function()
+          -- Add Leader + t mapping for snippet expansion (insert/select only,
+          -- so a normal-mode `<leader>t` prefix like `<leader>th` isn't delayed)
+          vim.keymap.set({ "i", "s" }, "<leader>t", function()
             if luasnip.expandable() then
               luasnip.expand()
             elseif luasnip.expand_or_locally_jumpable() then
