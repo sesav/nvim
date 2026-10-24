@@ -5,11 +5,17 @@ vim.g.maplocalleader = "\\"
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- Termguicolors
+vim.opt.termguicolors = true
+
 -- Enable line numbers
 vim.o.number = true
 
 -- Disable mouse mode, I don't use it.
 vim.o.mouse = ""
+
+-- Colorscheme
+vim.cmd.colorscheme("habamax")
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
@@ -38,6 +44,10 @@ vim.o.smartcase = true
 
 -- Keep signcolumn on by default
 vim.o.signcolumn = "yes"
+
+-- Default border for floating windows: LSP hover (<K>), signature help, etc.
+vim.o.winborder = "single"
+vim.api.nvim_set_hl(0, "FloatBorder", { fg = "#7c6f64", bg = "#3a3a3a" })
 
 -- Decrease update time
 vim.o.updatetime = 250
@@ -906,60 +916,6 @@ require("lazy").setup({
     },
   },
 
-  -- { -- You can easily change to a different colorscheme.
-  --   -- Change the name of the colorscheme plugin below, and then
-  --   -- change the command in the config to whatever the name of that colorscheme is.
-  --   --
-  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  --   "folke/tokyonight.nvim",
-  --   priority = 1000, -- Make sure to load this before all the other start plugins.
-  --   config = function()
-  --     ---@diagnostic disable-next-line: missing-fields
-  --     require("tokyonight").setup({
-  --       styles = {
-  --         comments = { italic = false }, -- Disable italics in comments
-  --       },
-  --     })
-  --
-  --     -- Load the colorscheme here.
-  --     -- Like many other themes, this one has different styles, and you could load
-  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  --     vim.cmd.colorscheme("tokyonight-night")
-  --   end,
-  -- },
-
-  {
-    "ellisonleao/gruvbox.nvim",
-    priority = 1000,
-    opts = {
-      terminal_colors = true,
-      undercurl = true,
-      underline = true,
-      bold = true,
-      italic = {
-        strings = true,
-        emphasis = true,
-        comments = true,
-        operators = false,
-        folds = true,
-      },
-      strikethrough = true,
-      invert_selection = false,
-      invert_signs = false,
-      invert_tabline = false,
-      inverse = true,
-      contrast = "",
-      palette_overrides = {},
-      overrides = {},
-      dim_inactive = false,
-      transparent_mode = true,
-    },
-    config = function(_, opts)
-      require("gruvbox").setup(opts)
-      vim.cmd.colorscheme("gruvbox")
-    end,
-  },
-
   -- Highlight todo, notes, etc in comments
   {
     "folke/todo-comments.nvim",
@@ -1093,7 +1049,7 @@ require("lazy").setup({
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
       options = {
-        theme = "gruvbox",
+        theme = "tomorrow_night",
         section_separators = "",
         component_separators = "|",
       },
