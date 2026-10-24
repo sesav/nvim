@@ -594,7 +594,16 @@ require("lazy").setup({
       --  See `:help lsp-config` for information about keys and how to configure
       ---@type table<string, vim.lsp.Config>
       local servers = {
-        -- clangd = {},
+        clangd = {
+          -- For multi-file projects, clangd needs a compile_commands.json
+          -- (CMake: -DCMAKE_EXPORT_COMPILE_COMMANDS=ON, or run `bear -- make`)
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+            "--function-arg-placeholders=false",
+          },
+        },
         -- gopls = {},
         -- rust_analyzer = {},
         --
@@ -938,6 +947,7 @@ require("lazy").setup({
       local parsers = {
         "bash",
         "c",
+        "cpp",
         "diff",
         "html",
         "lua",
