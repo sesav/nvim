@@ -23,6 +23,9 @@ vim.o.showmode = false
 -- Laststatus
 vim.opt.laststatus = 3
 
+-- Show the tab panel only when there are multiple tab pages.
+vim.opt.showtabline = 1
+
 -- Configure how new splits should be opened
 vim.o.splitright = true
 vim.o.splitbelow = true
@@ -1060,6 +1063,7 @@ require("lazy").setup({
     opts = {
       options = {
         theme = "tomorrow_night",
+        always_show_tabline = false,
         section_separators = "",
         component_separators = "|",
       },
@@ -1070,6 +1074,30 @@ require("lazy").setup({
         lualine_x = { "encoding", "fileformat", "filetype" },
         lualine_y = { "progress" },
         lualine_z = { "location" },
+      },
+      tabline = {
+        lualine_a = {
+          {
+            "tabs",
+            mode = 2,
+            path = 0,
+            tab_max_length = 24,
+            max_length = function()
+              return vim.o.columns
+            end,
+            -- Muted habamax colors, independent of the current editing mode.
+            tabs_color = {
+              active = { fg = "#1c1c1c", bg = "#9e9e9e", gui = "bold" },
+              inactive = { fg = "#9e9e9e", bg = "#303030" },
+            },
+            fmt = function(name)
+              return "tab " .. name
+            end,
+            symbols = { modified = " ●" },
+            component_separators = { left = "", right = "" },
+            section_separators = { left = "", right = "" },
+          },
+        },
       },
     },
   },
