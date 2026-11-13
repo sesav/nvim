@@ -15,7 +15,10 @@ vim.o.number = true
 vim.o.mouse = ""
 
 -- Colorscheme
-vim.cmd.colorscheme("habamax")
+vim.cmd.colorscheme("catppuccin")
+
+-- Background
+vim.o.background = "light"
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
@@ -50,7 +53,7 @@ vim.o.signcolumn = "yes"
 
 -- Default border for floating windows: LSP hover (<K>), signature help, etc.
 vim.o.winborder = "single"
-vim.api.nvim_set_hl(0, "FloatBorder", { fg = "#7c6f64", bg = "#3a3a3a" })
+vim.api.nvim_set_hl(0, "FloatBorder", { fg = "#a1a1a1", bg = "#dedeee" })
 
 -- Decrease update time
 vim.o.updatetime = 250
@@ -1062,7 +1065,7 @@ require("lazy").setup({
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
       options = {
-        theme = "tomorrow_night",
+        theme = "catppucin",
         always_show_tabline = false,
         section_separators = "",
         component_separators = "|",
@@ -1085,10 +1088,10 @@ require("lazy").setup({
             max_length = function()
               return vim.o.columns
             end,
-            -- Muted habamax colors, independent of the current editing mode.
+            -- Catppuccin light colors, independent of the current editing mode.
             tabs_color = {
-              active = { fg = "#1c1c1c", bg = "#9e9e9e", gui = "bold" },
-              inactive = { fg = "#9e9e9e", bg = "#303030" },
+              active = { fg = "##696a6e", bg = "#b7bbc4", gui = "bold" },
+              inactive = { fg = "#858992", bg = "#d7d8dc" },
             },
             fmt = function(name)
               return "tab " .. name
